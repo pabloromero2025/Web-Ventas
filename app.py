@@ -81,6 +81,7 @@ if "navegacion_actual" not in st.session_state:
     st.session_state.navegacion_actual = "🏠 Inicio / Dashboard"
 
 # --- BARRA LATERAL ---
+# --- BARRA LATERAL ---
 with st.sidebar:
     st.markdown("<h2 style='text-align: center; color: #10b981 !important;'>💼 GESTIÓN PRO</h2>", unsafe_allow_html=True)
     st.write("---")
@@ -92,6 +93,57 @@ with st.sidebar:
     st.session_state.navegacion_actual = opcion_menu
     st.write("---")
     st.markdown("<small style='color: #64748b;'>Servidor Supabase Activo en la Nube</small>", unsafe_allow_html=True)
+    
+    # --- BOTÓN DE WHATSAPP CON COMPONENTE NATIVO (NO BLOQUEABLE) ---
+    NUMERO_TELEFONO = "5491160335829"
+    
+    # Recuperamos las respuestas de los usuarios guardadas en memoria para armar el texto
+    texto_whatsapp = "🤖 *Resumen de Consulta del Cliente*\n\n"
+    if "messages" in st.session_state and st.session_state.messages:
+        for msg in st.session_state.messages:
+            if msg["role"] == "user":
+                texto_whatsapp += f"• {msg['content']}\n"
+    else:
+        texto_whatsapp += "Hola, solicito soporte técnico o información sobre el sistema."
+
+    import urllib.parse
+    texto_codificado = urllib.parse.quote(texto_whatsapp)
+    url_whatsapp_sidebar = f"https://wa.me/{NUMERO_TELEFONO}?text={texto_codificado}"
+    
+    # Inyectamos estilos específicos para cambiar el aspecto del botón nativo de Streamlit
+    st.markdown(
+        """
+        <style>
+            div[data-testid="stSidebar"] div.stButton button {
+                background-color: #cbd5e1 !important;
+                color: #000000 !important;
+                border: 1px solid #94a3b8 !important;
+                border-radius: 10px !important;
+                font-weight: bold !important;
+                font-size: 1.1rem !important;
+                height: 50px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.2) !important;
+            }
+            div[data-testid="stSidebar"] div.stButton button:hover {
+                background-color: #e2e8f0 !important;
+                border-color: #64748b !important;
+                transform: scale(1.02);
+            }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+    
+    # Espaciado para mandarlo abajo en la barra lateral tal como en tu Excel
+    st.write("")
+    st.write("")
+    st.write("")
+    
+    # Botón de enlace oficial de Streamlit (Evita bloqueos de ventanas emergentes de Chrome)
+    st.link_button("💬 Consultar", url_whatsapp_sidebar, use_container_width=True)
 
 if "Ventas" in opcion_menu:
     st.markdown("<style>[data-testid='stSidebar'] {display: none !important;} [data-testid='stAppViewBlockContainer'] {padding-left: 2rem !important; padding-right: 2rem !important; max-width: 100% !important;} [data-testid='stSidebarCollapseButton'] {display: none !important;}</style>", unsafe_allow_html=True)
