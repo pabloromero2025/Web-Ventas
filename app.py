@@ -199,13 +199,13 @@ elif "Artículos" in opcion_menu:
                     "codigo": str(cod).strip(),
                     "descripcion": str(desc).strip(),
                     "rubro": str(rubro_seleccionado),
-                    "costo": float(costo) if costo else 0.0, # Mantiene float4 de Supabase
-                    "precio_venta": str(precio_local),       # Fuerza text de Supabase
+                    "proveedor": "-",
+                    "vencimiento": "-",
+                    "costo": float(costo) if costo else 0.0,
+                    "precio_venta": str(precio_local),
                     "fecha_act": str(f_act),
                     "ultima_venta": "-",
-                    "vencimiento": "-",
-                    "proveedor": "-",
-                    "stock_actual": int(stock) if stock else 0 # Mantiene int4 de Supabase
+                    "stock_actual": int(stock) if stock else 0
                 }
 
                 supabase.table("articulos").upsert(data_ins).execute()
