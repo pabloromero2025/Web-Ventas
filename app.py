@@ -128,7 +128,7 @@ with st.sidebar:
                 box-shadow: 0 4px 6px rgba(0,0,0,0.2) !important;
             }
             div[data-testid="stSidebar"] div.stButton button:hover {
-                background-color: #e2e8f0 !important;
+                background-color: #8fce00 !important;
                 border-color: #64748b !important;
                 transform: scale(1.02);
             }
