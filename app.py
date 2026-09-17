@@ -148,8 +148,6 @@ elif "Artículos" in opcion_menu:
         r_list = [r["nombre"] for r in res_rub.data]
         margen_dict = {r["nombre"]: r["margen_defecto"] for r in res_rub.data}
 
-
-
         def actualizar_valores_por_rubro():
             rubro_actual = st.session_state.alta_rubro
             iteracion = st.session_state.get("alta_form_iter", 0)
@@ -191,16 +189,22 @@ elif "Artículos" in opcion_menu:
                 st.error("Rellena los campos obligatorios.")
             else:
                 f_act = datetime.now().strftime("%d/%m/%Y")
+                
+                # Intentar formatear de forma segura según el tipo de columna en la BD
+                try:
+                    valor_precio = float(precio_local)
+                except:
+                    valor_precio = str(precio_local).replace('.', ',')
+
                 data_ins = {
-                    "codigo": cod.strip(), 
-                    "descripcion": desc.strip(), 
-                    "rubro": rubro_seleccionado, 
-                    "costo": float(costo), 
-                    "precio_venta": float(precio_local), # <-- Corrección para enviar número puro
-                    "fecha_act": f_act, 
+                    "codigo": cod.strip(),
+                    "descripcion": desc.strip(),
+                    "rubro": rubro_seleccionado,
+                    "costo": float(costo),
+                    "precio_venta": valor_precio,
+                    "fecha_act": f_act,
                     "stock_actual": int(stock)
                 }
-
                 supabase.table("articulos").upsert(data_ins).execute()
                 st.toast(f"¡{desc} registrado correctamente!", icon="🎉")
                 st.session_state.alta_form_iter += 1
@@ -237,11 +241,17 @@ elif "Artículos" in opcion_menu:
                     with col_m1:
                         if st.button("💾 Guardar Cambios", type="primary", width='stretch'):
                             f_act = datetime.now().strftime("%d/%m/%Y")
+                            
+                            try:
+                                valor_precio_upd = float(nuevo_pv)
+                            except:
+                                valor_precio_upd = str(nuevo_pv).replace('.', ',')
+
                             supabase.table("articulos").update({
                                 "codigo": nuevo_codigo.strip(),
                                 "descripcion": nueva_desc.strip(),
                                 "costo": nuevo_costo,
-                                "precio_venta": str(nuevo_pv).replace('.', ','),
+                                "precio_venta": valor_precio_upd,
                                 "stock_actual": nuevo_stock,
                                 "fecha_act": f_act
                             }).eq("codigo", codigo_editar).execute()
@@ -293,8 +303,6 @@ elif "Artículos" in opcion_menu:
                             supabase.table("articulos").update({"rubro": "- Sin clasificar -"}).eq("rubro", datos_r_act["nombre"]).execute()
                             st.toast("Rubro eliminado.", icon="🗑️")
                             st.rerun()
-
-
 
 # --- 3. MÓDULO: REPOSICIÓN DE STOCK & ACTUALIZACIÓN DE PRECIOS ---
 elif "Reposición" in opcion_menu:
