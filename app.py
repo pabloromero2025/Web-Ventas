@@ -115,7 +115,7 @@ with st.sidebar:
         """
         <style>
             div[data-testid="stSidebar"] div.stButton button {
-                background-color: #cbd5e1 !important;
+                background-color: #8fce00 !important;
                 color: #000000 !important;
                 border: 1px solid #94a3b8 !important;
                 border-radius: 10px !important;
