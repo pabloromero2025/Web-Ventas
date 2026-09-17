@@ -65,7 +65,6 @@ def generar_codigo_autonumerico(rubro_nombre):
     
     res = supabase.table("articulos").select("codigo").ilike("codigo", f"{prefijo}%").order("codigo", desc=True).limit(1).execute()
     
-    # CORRECCIÓN DE SEGURIDAD: Validar que la lista contenga al menos un elemento
     if res.data and len(res.data) > 0:
         ultimo_codigo = res.data[0]["codigo"]
         try:
@@ -74,12 +73,9 @@ def generar_codigo_autonumerico(rubro_nombre):
         except ValueError:
             siguiente_num = 1
     else:
-        # Si la tabla está vacía para este rubro, empieza en 1
         siguiente_num = 1
         
     return f"{prefijo}{siguiente_num:04d}"
-
-
 
 if "navegacion_actual" not in st.session_state:
     st.session_state.navegacion_actual = "🏠 Inicio / Dashboard"
@@ -151,6 +147,7 @@ elif "Artículos" in opcion_menu:
         res_rub = supabase.table("rubros").select("nombre, margen_defecto").execute()
         r_list = [r["nombre"] for r in res_rub.data]
         margen_dict = {r["nombre"]: r["margen_defecto"] for r in res_rub.data}
+
 
 
         def actualizar_valores_por_rubro():
