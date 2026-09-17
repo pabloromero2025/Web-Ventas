@@ -195,16 +195,19 @@ elif "Artículos" in opcion_menu:
                     valor_precio = float(precio_local)
                 except:
                     valor_precio = str(precio_local).replace('.', ',')
-
                 data_ins = {
-                    "codigo": cod.strip(),
-                    "descripcion": desc.strip(),
-                    "rubro": rubro_seleccionado,
-                    "costo": float(costo),
-                    "precio_venta": valor_precio,
-                    "fecha_act": f_act,
-                    "stock_actual": int(stock)
+                    "codigo": str(cod).strip(),
+                    "descripcion": str(desc).strip(),
+                    "rubro": str(rubro_seleccionado),
+                    "costo": float(costo) if costo else 0.0, # Mantiene float4 de Supabase
+                    "precio_venta": str(precio_local),       # Fuerza text de Supabase
+                    "fecha_act": str(f_act),
+                    "ultima_venta": "-",
+                    "vencimiento": "-",
+                    "proveedor": "-",
+                    "stock_actual": int(stock) if stock else 0 # Mantiene int4 de Supabase
                 }
+
                 supabase.table("articulos").upsert(data_ins).execute()
                 st.toast(f"¡{desc} registrado correctamente!", icon="🎉")
                 st.session_state.alta_form_iter += 1
